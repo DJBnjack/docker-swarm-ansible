@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "slave-01"
+    },
+    "labName": {
+      "type": "string",
+      "defaultValue": "DockerCluster"
+    },
+    "userName": {
+      "type": "string",
+      "defaultValue": "johannes"
+    },
+    "size": {
+      "type": "string",
+      "defaultValue": "Standard_DS1"
+    },
+    "sshKey": {
+      "type": "securestring"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-05-21-preview",
+      "type": "Microsoft.DevTestLab/labs/virtualMachines",
+      "name": "[concat(parameters('labName'), '/', parameters('name'))]",
+      "location": "westeurope",
+      "properties": {
+        "labVirtualNetworkId": "[concat(resourceGroup().id, '/providers/Microsoft.DevTestLab/labs/', parameters('labName'), '/virtualnetworks/dtldockercluster')]",
+        "notes": "Ubuntu Server 15.10",
+        "galleryImageReference": {
+          "offer": "UbuntuServer",
+          "publisher": "Canonical",
+          "sku": "15.10",
+          "osType": "Linux",
+          "version": "latest"
+        },
+        "size": "[parameters('size')]",
+        "userName": "[parameters('userName')]",
+        "sshKey": "[parameters('sshKey')]",
+        "isAuthenticationWithSshKey": true,
+        "labSubnetName": "DtlDockerClusterSubnet",
+        "disallowPublicIpAddress": false,
+        "osType": ""
+      }
+    }
+  ]
+}
